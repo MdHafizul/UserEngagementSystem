@@ -1,0 +1,164 @@
+
+    /* General Reset */
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+/* Landing Page Styles */
+.landing-header {
+  background: linear-gradient(135deg, #6BAF92, #4BCBBD);
+  color: white;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.landing-header h1 {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 3rem;
+}
+
+.landing-header .btn-gradient {
+  background: linear-gradient(135deg, #6BAF92, #4BCBBD);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 12px 30px;
+  font-size: 1.2rem;
+  margin-top: 20px;
+  transition: all 0.3s ease;
+}
+
+.landing-header .btn-gradient:hover {
+  background: linear-gradient(135deg, #4BCBBD, #6BAF92);
+}
+
+/* Sidebar */
+.sidebar {
+  background: linear-gradient(135deg, #6BAF92, #4BCBBD);
+  color: white;
+  height: 100vh;
+  width: 250px;
+  position: fixed;
+  padding: 20px;
+}
+
+.sidebar .brand-logo {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 1.8rem;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar .nav {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar .nav li {
+  margin: 15px 0;
+}
+
+.sidebar .nav li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+.sidebar .nav li a:hover,
+.sidebar .nav li a.active {
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+.logout-section {
+  text-align: center;
+  position: absolute;
+  bottom: 30px;
+  width: 100%;
+}
+
+/* Main Content */
+.main-content {
+  margin-left: 250px;
+  padding: 30px;
+  min-height: 100vh;
+}
+
+.main-header h1 {
+  font-family: 'Nunito Sans', sans-serif;
+  font-weight: 700;
+  font-size: 2.5rem;
+  color: #4BCBBD;
+}
+
+.main-header .subtext {
+  color: gray;
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+/* Recommendation Cards */
+.recommendations .recommendation-card {
+  background: rgba(255, 255, 255, 0.85);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.recommendations .recommendation-card:hover {
+  transform: translateY(-5px);
+}
+
+.recommendation-card h3 {
+  font-size: 1.5rem;
+  color: #6BAF92;
+}
+
+.recommendation-card p {
+  font-size: 1rem;
+  margin: 15px 0;
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, #6BAF92, #4BCBBD);
+  color: white;
+  border: none;
+  border-radius: 30px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  transition: background 0.3s ease;
+}
+
+.btn-gradient:hover {
+  background: linear-gradient(135deg, #4BCBBD, #6BAF92);
+}
+
+/* Progress Section */
+.progress-section {
+  text-align: center;
+  margin-top: 50px;
+}
+
+.progress-section h2 {
+  color: #6BAF92;
+}
+
+.progress-circle {
+  width: 150px;
+  height: 150px;
+  background: conic-gradient(#6BAF92 60%, #e9ecef 40%);
+  border-radius: 50%;
+  margin: 0 auto;
+}
