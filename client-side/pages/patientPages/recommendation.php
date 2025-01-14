@@ -34,8 +34,8 @@ $user_id = $_SESSION['user_id'];
     <ul class="nav flex-column">
       <li><a href="#" class="active">Recommendations</a></li>
       <li><a href="./task.php">Tasks</a></li>
-      <li><a href="#">Resources</a></li>
-      <li><a href="#">Profile</a></li>
+      <li><a href="./resource.php">Resources</a></li>
+      <li><a href="./profile.php">Profile</a></li>
     </ul>
     <div class="logout-section">
       <button class="btn btn-outline-light">Logout</button>
@@ -45,7 +45,7 @@ $user_id = $_SESSION['user_id'];
   <!-- Main Content -->
   <div class="main-content">
     <header class="main-header">
-      <h1>Good Morning, Hafizul!</h1>
+      <h1>Good Morning, YEN!</h1>
       <p class="subtext">Here are your personalized recommendations for today.</p>
     </header>
 

@@ -91,7 +91,7 @@ $user_id = $_SESSION['user_id'];
                             <label for="editUserPassword" class="form-label fw-semibold">Password</label>
                             <input type="password" class="form-control border-radius-lg" id="editUserPassword" placeholder="Enter your password">
                         </div>
-                        <button type="submit" class="btn bg-gradient-dark text-white w-100 border-radius-lg">Save Changes</button>
+                        <button type="submit" class="btn bg-gradient-dark text-black w-100 border-radius-lg">Save Changes</button>
                     </form>
                 </div>
             </div>

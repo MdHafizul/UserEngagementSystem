@@ -2,25 +2,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const apiEndpoint = `http://localhost/Naluri/server-side/routes/userRoutes.php/read_single?user_id=${userId}`;
     const profileCard = document.getElementById("profile-card");
 
-    console.log("Script loaded. User ID:", userId); // Debugging
-
     // Fetch user profile data
     function fetchUserProfile() {
-        console.log("Attempting to fetch user profile from:", apiEndpoint); // Debugging
-
         fetch(apiEndpoint)
             .then((response) => {
-                console.log("Received response:", response); // Debugging response object
-
                 if (!response.ok) {
-                    console.error("Network response was not ok. Status:", response.status);
                     throw new Error("Network response was not ok");
                 }
                 return response.json();
             })
             .then((user) => {
-                console.log("Fetched user data:", user); // Debugging user data
-
                 profileCard.innerHTML = `
                     <div class="col-md-12 col-xl-4">
                         <div class="card" style="border-radius: 15px;">
@@ -59,52 +50,48 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // Initial fetch of user profile data
-    fetchUserProfile();
-
-    // Handle Edit User Form Submission
-    document.getElementById('editUserForm').addEventListener('submit', async (event) => {
+    // Handle form submission for editing user
+    document.getElementById("editUserForm").addEventListener("submit", (event) => {
         event.preventDefault();
 
-        const name = sanitizeInput(document.getElementById('editUserName').value.trim());
-        const email = sanitizeInput(document.getElementById('editUserEmail').value.trim());
-        const username = sanitizeInput(document.getElementById('editUserUsername').value.trim());
-        const password = sanitizeInput(document.getElementById('editUserPassword').value.trim());
+        const userData = {
+            name: document.getElementById("editUserName").value,
+            email: document.getElementById("editUserEmail").value,
+            username: document.getElementById("editUserUsername").value,
+        };
 
-        try {
-            const response = await fetch(`http://localhost/Naluri/server-side/routes/userRoutes.php/update?user_id=${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    name,
-                    email,
-                    username,
-                    password
-                })
-            });
+        const password = document.getElementById("editUserPassword").value;
+        if (password) {
+            userData.password = password;
+        }
 
-            const result = await response.json();
+        console.log("Updating user with ID:", userId);
+        console.log("User data:", userData);
 
-            if (response.ok) {
+        fetch(`http://localhost/Naluri/server-side/routes/userRoutes.php/update?user_id=${userId}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(userData),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("User updated:", data);
                 alert("Profile updated successfully!");
                 fetchUserProfile(); // Refresh the profile data
-                const editUserModal = new bootstrap.Modal(document.getElementById('editUserModal'));
-                editUserModal.hide(); // Hide the modal
-            } else {
-                alert(`Error: ${result.message}`);
-            }
-        } catch (error) {
-            console.error("Error updating profile:", error);
-            alert("An error occurred during profile update. Please try again later.");
-        }
+                bootstrap.Modal.getInstance(document.getElementById("editUserModal")).hide();
+            })
+            .catch((error) => {
+                console.error("Error updating user:", error);
+            });
     });
 
-    function sanitizeInput(input) {
-        const element = document.createElement('div');
-        element.innerText = input;
-        return element.innerHTML;
-    }
+    // Initial fetch of user profile data
+    fetchUserProfile();
 });

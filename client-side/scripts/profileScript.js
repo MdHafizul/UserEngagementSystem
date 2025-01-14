@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("editUserName").value = user.name;
         document.getElementById("editUserEmail").value = user.email;
         document.getElementById("editUserUsername").value = user.username;
-        document.getElementById("editUserPassword").value = ""; 
+        document.getElementById("editUserPassword").value = "";
     }
 
     // Handle form submission for editing user
