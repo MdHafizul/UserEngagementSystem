@@ -1,3 +1,19 @@
+<?php
+session_start();
+if (isset($_GET['action']) && $_GET['action'] == 'logout') {
+  session_unset();
+  session_destroy();
+  header('Location: /Naluri/client-side/index.php');
+  exit();
+}
+if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
+    header('Location: /Naluri/client-side/index.php');
+    exit();
+}
+
+?>
+
+
 <!-- Material Icons -->
 <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -102,7 +118,7 @@
                             </div>
                         </div>
                         <div class="container-fluid py-4">
-                            <div class="row">
+                            <div class="row justify-content-center">
                                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                                     <div class="card">
                                         <div class="card-header p-3 ps-4">
@@ -189,7 +205,6 @@
     <!-- Custom JS -->
     <script>
         // SIDEBAR TOGGLE
-
         let sidebarOpen = false;
         const sidebar = document.getElementById('sidebar');
 
@@ -207,18 +222,26 @@
             }
         }
 
+        // Task data: Replace this with actual task completion data
+        const tasks = [1, 0, 1, 1, 0, 1, 0]; // Example: 1 = completed, 0 = not completed
+
+        // Calculate totals
+        const completedTasks = tasks.filter(task => task === 1).length;
+        const notCompletedTasks = tasks.filter(task => task === 0).length;
+
         // PIE CHART setup for Task Completion
         const pieChartOptions = {
-            series: [80, 70, 90, 60, 85], // Task completion percentages
+            series: [completedTasks, notCompletedTasks], // Task completed vs not completed
             chart: {
                 type: 'pie',
                 height: 350,
             },
-            labels: ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5'], // Task labels
+            labels: ['Completed', 'Not Completed'], // Labels for the chart
         };
 
         const pieChart = new ApexCharts(document.querySelector('#bar-chart'), pieChartOptions);
         pieChart.render();
+
         // AREA CHART setup for Total Time Taken
         const areaChartOptions = {
             series: [{
@@ -237,6 +260,7 @@
         const areaChart = new ApexCharts(document.querySelector('#area-chart'), areaChartOptions);
         areaChart.render();
     </script>
+
 </body>
 
 </html>

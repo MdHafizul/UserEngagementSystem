@@ -99,7 +99,7 @@ document.addEventListener("DOMContentLoaded", () => {
             password: document.getElementById("userPassword").value,
             user_type: "patient",
         };
-        
+
         fetch("http://localhost/Naluri/server-side/routes/userRoutes.php/create", {
             method: "POST",
             headers: {
@@ -110,21 +110,31 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((response) => {
                 if (!response.ok) {
                     return response.text().then((text) => {
-                        console.error("Error adding user:", text); 
                         throw new Error(text);
                     });
                 }
                 return response.json();
             })
             .then((data) => {
+                Swal.fire(
+                    'Success!',
+                    'User added successfully.',
+                    'success'
+                );
                 console.log("User added:", data);
                 addUserModal.hide();
                 fetchUserData();
             })
             .catch((error) => {
+                Swal.fire(
+                    'Error!',
+                    'There was an error adding the user. Please try again.',
+                    'error'
+                );
                 console.error("Error adding user:", error);
             });
     });
+
 
     // Show the edit user modal
     function showEditUserModal(userId) {
@@ -188,26 +198,46 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle user deletion
     function deleteUser(userId) {
-        if (confirm("Are you sure you want to delete this user?")) {
-            fetch(`http://localhost/Naluri/server-side/routes/userRoutes.php/delete?user_id=${userId}`, {
-                method: "DELETE",
-            })
-                .then((response) => {
-                    if (!response.ok) {
-                        return response.text().then((text) => {
-                            throw new Error(text);
-                        });
-                    }
-                    return response.json();
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                fetch(`http://localhost/Naluri/server-side/routes/userRoutes.php/delete?user_id=${userId}`, {
+                    method: "DELETE",
                 })
-                .then((data) => {
-                    console.log("User deleted:", data);
-                    fetchUserData(); // Refresh the user list
-                })
-                .catch((error) => {
-                    console.error("Error deleting user:", error);
-                });
-        }
+                    .then((response) => {
+                        if (!response.ok) {
+                            return response.text().then((text) => {
+                                throw new Error(text);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then((data) => {
+                        console.log("User deleted:", data);
+                        Swal.fire(
+                            'Deleted!',
+                            'User has been deleted.',
+                            'success'
+                        );
+                        fetchUserData(); // Refresh the user list
+                    })
+                    .catch((error) => {
+                        console.error("Error deleting user:", error);
+                        Swal.fire(
+                            'Error!',
+                            'There was an error deleting the user.',
+                            'error'
+                        );
+                    });
+            }
+        });
     }
 
     function showAssignTaskModal(userId, userName) {
@@ -233,9 +263,14 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((error) => {
                 console.error("Error loading tasks:", error);
-                alert("Failed to load tasks. Please try again.");
+                Swal.fire(
+                    'Error!',
+                    'Failed to load tasks. Please try again.',
+                    'error'
+                );
             });
     }
+
     // Handle form submission for assigning task
     assignTaskForm.addEventListener("submit", (event) => {
         event.preventDefault();
@@ -263,11 +298,29 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then((data) => {
                 console.log("Task assigned:", data);
-                assignTaskModal.hide();
-                fetchUserData(); // Refresh the user list
+                if (data.message === "Task is already assigned to the user") {
+                    Swal.fire(
+                        'Warning!',
+                        'Task is already assigned to the user.',
+                        'warning'
+                    );
+                } else {
+                    assignTaskModal.hide();
+                    Swal.fire(
+                        'Success!',
+                        'Task assigned successfully.',
+                        'success'
+                    );
+                    fetchUserData(); // Refresh the user list
+                }
             })
             .catch((error) => {
                 console.error("Error assigning task:", error);
+                Swal.fire(
+                    'Error!',
+                    'There was an error assigning the task.',
+                    'error'
+                );
             });
     });
 

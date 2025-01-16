@@ -148,7 +148,6 @@ class UserController
     // @access Admins only
     public function delete($user_id)
     {
-        session_start();
         if ($_SESSION['user_type'] != 'admin') {
             http_response_code(403);
             echo json_encode(["message" => "Access forbidden. Admins only"]);

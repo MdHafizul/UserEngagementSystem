@@ -24,6 +24,12 @@ class UserTaskController
         $userTask->task_id = $data['task_id'];
         $userTask->status = $data['status'];
 
+        // Check if the task is already assigned to the user
+        if ($userTask->isTaskAssigned()) {
+            echo json_encode(["message" => "Task is already assigned to the user"]);
+            return;
+        }
+
         if ($userTask->create()) {
             echo json_encode(["message" => "User task created successfully"]);
         } else {
@@ -39,7 +45,7 @@ class UserTaskController
         global $conn;
         $task = new UserTask($conn);
         $result = $task->read();
-        if($result) {
+        if ($result) {
             echo json_encode($result, JSON_PRETTY_PRINT);
         } else {
             echo json_encode(["message" => "No user tasks found"]);
@@ -54,7 +60,7 @@ class UserTaskController
         global $conn;
         $task = new UserTask($conn);
         $result = $task->read_by_user($user_id);
-        if($result) {
+        if ($result) {
             echo json_encode($result, JSON_PRETTY_PRINT);
         } else {
             echo json_encode(["message" => "No user tasks found"]);
@@ -72,7 +78,7 @@ class UserTaskController
         $userTask->user_task_id = $id;
         $userTask->read_single();
 
-        if($userTask->user_id == null) {
+        if ($userTask->user_id == null) {
             echo json_encode(["message" => "User task not found"]);
         } else {
             $userTask_arr = [
@@ -91,7 +97,7 @@ class UserTaskController
     // @route PUT /routes/userTaskRoutes.php/update
     // public
 
- 
+
     public function update($user_task_id, $data)
     {
         global $conn;
@@ -105,22 +111,13 @@ class UserTaskController
             echo json_encode(["message" => "User task could not be updated"]);
         }
     }
-    
+
     // @desc Delete a user task
     // @route DELETE /routes/userTaskRoutes.php/delete
     // @access Admin only
     public function delete($id)
     {
         global $conn;
-
-        // Delete the corresponding task analysis
-        $analysis = new TaskAnalysis($conn);
-        $analysis->user_task_id = $id;
-        if (!$analysis->deleteByUserTaskId()) {
-            echo json_encode(["success" => false, "message" => "Task analysis could not be deleted"], JSON_PRETTY_PRINT);
-            return;
-        }
-
         // Delete the user task
         $userTask = new UserTask($conn);
         $userTask->user_task_id = $id;
@@ -131,7 +128,6 @@ class UserTaskController
             echo json_encode(["success" => false, "message" => "User task could not be deleted"], JSON_PRETTY_PRINT);
         }
     }
-
 
     // Helper method to check the logged-in user's type
     private function checkUserType()

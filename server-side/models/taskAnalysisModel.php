@@ -5,7 +5,7 @@ class TaskAnalysis
     private $table = 'taskanalysis';
 
     public $analysis_id;
-    public $user_task_id;
+    public $task_id; // Changed from user_task_id to task_id
     public $user_id;
     public $is_task_done;
     public $time_taken_in_hours;
@@ -22,13 +22,13 @@ class TaskAnalysis
     public function createAnalysis()
     {
         $sql = "INSERT INTO " . $this->table . " 
-                (user_task_id, user_id, is_task_done, time_taken_in_hours, article_watched, video_watched, books_read) 
+                (task_id, user_id, is_task_done, time_taken_in_hours, article_watched, video_watched, books_read) 
                 VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conn->prepare($sql);
 
         $stmt->bind_param(
             'iisiiii',
-            $this->user_task_id,
+            $this->task_id, // Changed from user_task_id to task_id
             $this->user_id,
             $this->is_task_done,
             $this->time_taken_in_hours,
@@ -86,6 +86,76 @@ class TaskAnalysis
         $stmt->bind_result($total_completed);
         $stmt->fetch();
         return $total_completed;
+    }
+
+    // Delete task analysis by task_id
+    public function deleteByTaskId() // Changed from deleteByUserTaskId to deleteByTaskId
+    {
+        $query = 'DELETE FROM ' . $this->table . ' WHERE task_id = ?'; // Changed from user_task_id to task_id
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('i', $this->task_id); // Changed from user_task_id to task_id
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    // Delete task analysis by analysis_id
+    public function delete()
+    {
+        $query = 'DELETE FROM ' . $this->table . ' WHERE analysis_id = ?';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('i', $this->analysis_id);
+    
+        if ($stmt->execute()) {
+            if ($stmt->affected_rows > 0) {
+                return true;
+            } else {
+                error_log("No rows affected. Analysis ID: " . $this->analysis_id);
+                return false;
+            }
+        } else {
+            error_log("Error executing query: " . $stmt->error);
+            return false;
+        }
+    }
+
+    // Fetch the number of videos watched, books read, and articles watched
+    public function getMediaCounts()
+    {
+        $sql = "SELECT 
+                    SUM(video_watched) as total_videos_watched, 
+                    SUM(books_read) as total_books_read, 
+                    SUM(article_watched) as total_articles_watched 
+                FROM " . $this->table;
+        $stmt = $this->conn->query($sql);
+
+        if ($stmt) {
+            return $stmt->fetch_assoc();
+        }
+        return false;
+    }
+
+    // Fetch the number of videos watched, books read, and articles watched by user ID
+    public function getMediaCountsByUser($user_id)
+    {
+        $sql = "SELECT 
+                    SUM(video_watched) as total_videos_watched, 
+                    SUM(books_read) as total_books_read, 
+                    SUM(article_watched) as total_articles_watched 
+                FROM " . $this->table . " 
+                WHERE user_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        if ($result) {
+            return $result->fetch_assoc();
+        }
+        return false;
     }
 }
 ?>

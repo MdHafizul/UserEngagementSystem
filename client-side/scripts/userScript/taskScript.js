@@ -67,33 +67,67 @@ document.addEventListener("DOMContentLoaded", () => {
         const submitTaskModal = new bootstrap.Modal(document.getElementById("submitTaskModal"));
         submitTaskModal.show();
     }
-
     // Submit task form event listener
     document.getElementById("submitTaskForm").addEventListener("submit", function (e) {
         e.preventDefault();
-
+    
         const taskId = document.getElementById("submitTaskForm").getAttribute("data-task-id");
-
-        // API call to delete the task
-        fetch(`http://localhost/Naluri/server-side/routes/userTaskRoutes.php/delete?user_task_id=${taskId}`, {
-            method: "DELETE",
+        const userId = document.getElementById("userId").value;
+        const isTaskDone = document.getElementById("taskDone").checked;
+        const timeTaken = parseFloat(document.getElementById("timeTaken").value) || 0;
+        const articleWatched = document.getElementById("articleRead").checked;
+        const videoWatched = document.getElementById("videoWatched").checked;
+        const booksRead = document.getElementById("bookRead").checked;
+    
+        const taskAnalysisData = {
+            user_task_id: taskId,
+            user_id: userId,
+            is_task_done: isTaskDone,
+            time_taken_in_hours: timeTaken,
+            article_watched: articleWatched,
+            video_watched: videoWatched,
+            books_read: booksRead
+        };
+    
+        console.log("Submitting task analysis data:", taskAnalysisData); // Log the data being sent
+    
+        // API call to create task analysis
+        fetch("http://localhost/Naluri/server-side/routes/taskAnalysisRoutes.php/create", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(taskAnalysisData),
         })
             .then((response) => response.json())
             .then((data) => {
+                console.log("Server response:", data); // Log the server response
                 if (data.success) {
-                    alert("Task submitted and deleted successfully!");
+                    Swal.fire(
+                        'Success!',
+                        'Task submitted successfully!',
+                        'success'
+                    );
                     fetchTaskData(); // Refresh the task list
                     document.querySelector("#submitTaskModal .btn-close").click(); // Close modal
                 } else {
-                    alert("Failed to delete the task.");
+                    Swal.fire(
+                        'Error!',
+                        'Failed to create task analysis.',
+                        'error'
+                    );
                 }
             })
             .catch((error) => {
-                console.error("Error deleting task:", error);
-                alert("Failed to delete the task. Please try again.");
+                console.error("Error creating task analysis:", error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to create task analysis. Please try again.',
+                    'error'
+                );
             });
     });
-
+    
     // Initial fetch of task data
     fetchTaskData();
 });

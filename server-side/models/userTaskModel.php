@@ -32,6 +32,19 @@ class UserTask
         return false;
     }
 
+    // Check if the task is already assigned to the user
+    public function isTaskAssigned()
+    {
+        $sql = "SELECT COUNT(*) as count FROM " . $this->table . " WHERE user_id = ? AND task_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('ii', $this->user_id, $this->task_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+
+        return $row['count'] > 0;
+    }
+
     // Get all user-task assignments
     public function read()
     {
@@ -52,7 +65,7 @@ class UserTask
             return false; // Query failed
         }
     }
-    
+
     // Get user-task assignments by user ID
     public function read_by_user($user_id)
     {
@@ -76,7 +89,7 @@ class UserTask
         }
     }
 
-    
+
 
     // Get a single user-task assignment by ID
     public function read_single()

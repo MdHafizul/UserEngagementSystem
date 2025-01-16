@@ -12,7 +12,6 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'patient') {
     header('Location: /Naluri/client-side/index.php');
     exit();
 }
-
 $user_id = $_SESSION['user_id'];
 ?>
 
@@ -38,7 +37,7 @@ $user_id = $_SESSION['user_id'];
       <li><a href="./profile.php">Profile</a></li>
     </ul>
     <div class="logout-section">
-      <button class="btn btn-outline-light">Logout</button>
+      <a href="?action=logout" class="btn btn-outline-light">Logout</a>
     </div>
   </div>
 

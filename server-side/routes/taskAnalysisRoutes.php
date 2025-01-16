@@ -48,18 +48,29 @@ switch ($action) {
             echo json_encode(["message" => "Method Not Allowed"]);
         }
         break;
-
-    case 'total-tasks-completed-by-user':
-        if ($request_method == 'GET') {
-            $user_id = intval($url_parts[count($url_parts) - 2]);
-            $taskAnalysisController->getTotalTasksCompletedByUser($user_id);
+    case 'delete':
+        if ($request_method == 'DELETE') {
+            $analysis_id = $_GET['analysis_id'] ?? null;
+            if ($analysis_id) {
+                $taskAnalysisController->delete($analysis_id);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Analysis ID is required"]);
+            }
         } else {
             http_response_code(405);
             echo json_encode(["message" => "Method Not Allowed"]);
         }
         break;
-
-    default:
+    case 'media-counts':
+        if ($request_method == 'GET') {
+            $taskAnalysisController->getMediaCounts();
+        } else {
+            http_response_code(405);
+            echo json_encode(["message" => "Method Not Allowed"]);
+        }
+        break;
+        default:
         // Check for the 'total-tasks-completed-by-user/{user_id}' pattern
         if (preg_match('/total-tasks-completed-by-user\/(\d+)$/', $request_uri, $matches)) {
             if ($request_method == 'GET') {
@@ -69,10 +80,21 @@ switch ($action) {
                 http_response_code(405);
                 echo json_encode(["message" => "Method Not Allowed"]);
             }
+        }
+        // Check for the 'media-counts-by-user/{user_id}' pattern
+        else if (preg_match('/media-counts-by-user\/(\d+)$/', $request_uri, $matches)) {
+            if ($request_method == 'GET') {
+                $user_id = intval($matches[1]);
+                $taskAnalysisController->getMediaCountsByUser($user_id);
+            } else {
+                http_response_code(405);
+                echo json_encode(["message" => "Method Not Allowed"]);
+            }
         } else {
             http_response_code(404);
             echo json_encode(["message" => "Not Found"]);
         }
         break;
+
 }
 ?>

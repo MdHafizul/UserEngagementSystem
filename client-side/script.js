@@ -90,7 +90,7 @@ document.getElementById('signInForm').addEventListener('submit', async (event) =
             if (result.user_type === 'employee') {
                 redirectUrl = '/Naluri/client-side/pages/employeePages/dashboard.php';
             } else if (result.user_type === 'patient') {
-                redirectUrl = '/Naluri/client-side/pages/patientPages/recommendation.php';
+                redirectUrl = '/Naluri/client-side/pages/patientPages/patientIndex.php';
             }
 
             window.location.href = redirectUrl;
