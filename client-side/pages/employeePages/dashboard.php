@@ -1,6 +1,5 @@
 <?php
 session_start();
-
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
     session_unset();
     session_destroy();
@@ -11,7 +10,6 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
     header('Location: /Naluri/client-side/index.php');
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -22,7 +20,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="apple-touch-icon" sizes="76x76" href="../../assets/img/naluri.png">
     <link rel="icon" type="image/png" href="../../assets/img/naluri.png">
-    <title>Dashboard</title>
+    <title>Employee Dashboard</title>
 
     <!-- Fonts and icons -->
     <link rel="stylesheet" type="text/css"
@@ -35,6 +33,8 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <!-- CSS Files -->
     <link id="pagestyle" href="../../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -66,8 +66,8 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="./user.php">
-                        <i class="material-symbols-rounded opacity-5">account_circle</i>
-                        <span class="nav-link-text ms-1">User</span>
+                        <i class="material-symbols-rounded opacity-5">groups</i>
+                        <span class="nav-link-text ms-1">Patient</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -111,13 +111,14 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                             </select>
                         </li>
                         <li class="nav-item d-flex align-items-center">
-                            <button class="btn btn-outline-primary btn-sm mb-0 me-3" id="showDataBtn">Show Data</button>
+                            <button class="btn btn-outline-primary btn-sm mb-0 me-3 ms-2" id="showDataBtn">Show
+                                Data</button>
                         </li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <div class="container-fluid py-2">
+        <div class="container-fluid py-4">
             <div class="row">
                 <div class="col-12">
                     <div class="card my-4">
@@ -126,15 +127,15 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                 <h6 class="text-white text-capitalize ps-3">Employee Dashboard</h6>
                             </div>
                         </div>
-                        <div class="container-fluid py-2">
-                            <div class="row">
+                        <div class="container-fluid py-4">
+                            <div class="row justify-content-center">
                                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                                     <div class="card">
-                                        <div class="card-header p-2 ps-3">
+                                        <div class="card-header p-3 ps-4">
                                             <div class="d-flex justify-content-between">
                                                 <div>
-                                                    <p class="text-sm mb-0 text-capitalize">Task Completion</p>
-                                                    <h4 class="mb-0" id="task-completion">0</h4>
+                                                    <p class="text-sm mb-0 text-capitalize">Video Watched</p>
+                                                    <h4 class="mb-0" id="videos-watched">0</h4>
                                                 </div>
                                                 <div
                                                     class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -143,7 +144,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                             </div>
                                         </div>
                                         <hr class="dark horizontal my-0">
-                                        <div class="card-footer p-2 ps-3">
+                                        <div class="card-footer p-3 ps-4">
                                             <p class="mb-0 text-sm"><span
                                                     class="text-success font-weight-bolder">Updated just now</span></p>
                                         </div>
@@ -151,11 +152,11 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                 </div>
                                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                                     <div class="card">
-                                        <div class="card-header p-2 ps-3">
+                                        <div class="card-header p-3 ps-4">
                                             <div class="d-flex justify-content-between">
                                                 <div>
-                                                    <p class="text-sm mb-0 text-capitalize">Total Time Taken</p>
-                                                    <h4 class="mb-0" id="total-time-taken">0</h4>
+                                                    <p class="text-sm mb-0 text-capitalize">Books Read</p>
+                                                    <h4 class="mb-0" id="books-read">0</h4>
                                                 </div>
                                                 <div
                                                     class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -164,7 +165,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                             </div>
                                         </div>
                                         <hr class="dark horizontal my-0">
-                                        <div class="card-footer p-2 ps-3">
+                                        <div class="card-footer p-3 ps-4">
                                             <p class="mb-0 text-sm"><span
                                                     class="text-success font-weight-bolder">Updated just now</span></p>
                                         </div>
@@ -172,7 +173,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                 </div>
                                 <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
                                     <div class="card">
-                                        <div class="card-header p-2 ps-3">
+                                        <div class="card-header p-3 ps-4">
                                             <div class="d-flex justify-content-between">
                                                 <div>
                                                     <p class="text-sm mb-0 text-capitalize">Articles Watched</p>
@@ -185,58 +186,38 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                             </div>
                                         </div>
                                         <hr class="dark horizontal my-0">
-                                        <div class="card-footer p-2 ps-3">
+                                        <div class="card-footer p-3 ps-4">
                                             <p class="mb-0 text-sm"><span
                                                     class="text-success font-weight-bolder">Updated just now</span></p>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h6 class="mb-0 ">Video Watched</h6>
-                                            <p class="text-sm ">Number of videos watched</p>
-                                            <div class="pe-2">
-                                                <div class="chart">
-                                                    <canvas id="chart-video-watched" class="chart-canvas"
-                                                        height="170"></canvas>
-                                                </div>
-                                            </div>
-                                            <hr class="dark horizontal">
-                                            <div class="d-flex ">
-                                                <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                                                <p class="mb-0 text-sm">Updated just now</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="charts mt-4">
+                                <div class="charts-card mb-4">
+                                    <h2 class="chart-title">Task Completion</h2>
+                                    <div id="bar-chart"></div>
                                 </div>
-                                <div class="col-lg-4 col-md-6 mt-4 mb-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <h6 class="mb-0 ">Books Read</h6>
-                                            <p class="text-sm ">Number of books read</p>
-                                            <div class="pe-2">
-                                                <div class="chart">
-                                                    <canvas id="chart-books-read" class="chart-canvas"
-                                                        height="170"></canvas>
-                                                </div>
-                                            </div>
-                                            <hr class="dark horizontal">
-                                            <div class="d-flex ">
-                                                <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                                                <p class="mb-0 text-sm">Updated just now</p>
-                                            </div>
-                                        </div>
-                                    </div>
+                                <div class="charts-card mb-4">
+                                    <h2 class="chart-title">Total Time Taken</h2>
+                                    <div id="area-chart"></div>
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../../scripts/employeeScript/dashboardScript.js"></script>
-    <!-- Include Bootstrap JS for modal functionality -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Scripts -->
+    <!-- ApexCharts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+    <!-- Custom JS -->
+    <script src="../../scripts/dashboardScript.js"></script>
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 </body>
 
 </html>

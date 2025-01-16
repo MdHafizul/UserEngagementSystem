@@ -97,5 +97,45 @@ class TaskAnalysisController
         $counts = $taskAnalysis->getMediaCountsByUser($user_id);
         echo json_encode($counts, JSON_PRETTY_PRINT);
     }
+
+    // @desc Get tasks data
+    // @route GET /routes/taskAnalysisRoutes.php/tasks-done
+    public function getTasksData()
+    {
+        global $conn;
+        $taskAnalysis = new TaskAnalysis($conn);
+        $tasks = $taskAnalysis->getTasksData();
+        echo json_encode($tasks, JSON_PRETTY_PRINT);
+    }
+
+    // @desc Get tasks done and time taken by user ID
+    // @route GET /routes/taskAnalysisRoutes.php/tasks-done-by-user
+    public function getTasksDataByUser($user_id)
+    {
+        global $conn;
+        $taskAnalysis = new TaskAnalysis($conn);
+        $tasks = $taskAnalysis->getTasksDataByUser($user_id);
+        echo json_encode($tasks, JSON_PRETTY_PRINT);
+    }
+
+    // @desc Get time taken to complete tasks for all users
+    // @route GET /routes/taskAnalysisRoutes.php/time-taken
+    public function getTimeTakenToCompleteTasks()
+    {
+        global $conn;
+        $taskAnalysis = new TaskAnalysis($conn);
+        $timeData = $taskAnalysis->getTimeTakenToCompleteTasks();
+        echo json_encode($timeData, JSON_PRETTY_PRINT);
+    }
+
+    // @desc Get time taken to complete tasks by user ID
+    // @route GET /routes/taskAnalysisRoutes.php/time-taken-by-user
+    public function getTimeTakenToCompleteTasksByUser($user_id)
+    {
+        global $conn;
+        $taskAnalysis = new TaskAnalysis($conn);
+        $timeData = $taskAnalysis->getTimeTakenToCompleteTasksByUser($user_id);
+        echo json_encode($timeData, JSON_PRETTY_PRINT);
+    }
 }
 ?>

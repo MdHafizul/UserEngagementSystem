@@ -6,6 +6,7 @@ header("Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
 include_once '../controllers/taskAnalysisController.php';
+include_once '../models/taskAnalysisModel.php';
 
 // Instantiate TaskAnalysisController
 $taskAnalysisController = new TaskAnalysisController();
@@ -48,6 +49,7 @@ switch ($action) {
             echo json_encode(["message" => "Method Not Allowed"]);
         }
         break;
+
     case 'delete':
         if ($request_method == 'DELETE') {
             $analysis_id = $_GET['analysis_id'] ?? null;
@@ -62,6 +64,7 @@ switch ($action) {
             echo json_encode(["message" => "Method Not Allowed"]);
         }
         break;
+
     case 'media-counts':
         if ($request_method == 'GET') {
             $taskAnalysisController->getMediaCounts();
@@ -70,7 +73,56 @@ switch ($action) {
             echo json_encode(["message" => "Method Not Allowed"]);
         }
         break;
-        default:
+
+    case 'tasks-done':
+        if ($request_method == 'GET') {
+            $taskAnalysisController->getTasksData();
+        } else {
+            http_response_code(405);
+            echo json_encode(["message" => "Method Not Allowed"]);
+        }
+        break;
+
+    case 'tasks-done-by-user':
+        if ($request_method == 'GET') {
+            $user_id = $_GET['user_id'] ?? null;
+            if ($user_id) {
+                $taskAnalysisController->getTasksDataByUser($user_id);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "User ID is required"]);
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(["message" => "Method Not Allowed"]);
+        }
+        break;
+
+    case 'time-taken':
+        if ($request_method == 'GET') {
+            $taskAnalysisController->getTimeTakenToCompleteTasks();
+        } else {
+            http_response_code(405);
+            echo json_encode(["message" => "Method Not Allowed"]);
+        }
+        break;
+
+    case 'time-taken-by-user':
+        if ($request_method == 'GET') {
+            $user_id = $_GET['user_id'] ?? null;
+            if ($user_id) {
+                $taskAnalysisController->getTimeTakenToCompleteTasksByUser($user_id);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "User ID is required"]);
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(["message" => "Method Not Allowed"]);
+        }
+        break;
+
+    default:
         // Check for the 'total-tasks-completed-by-user/{user_id}' pattern
         if (preg_match('/total-tasks-completed-by-user\/(\d+)$/', $request_uri, $matches)) {
             if ($request_method == 'GET') {
@@ -94,7 +146,5 @@ switch ($action) {
             http_response_code(404);
             echo json_encode(["message" => "Not Found"]);
         }
-        break;
-
 }
 ?>

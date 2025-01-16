@@ -2,29 +2,35 @@
 session_start();
 
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-    session_unset();
-    session_destroy();
-    header('Location: /Naluri/client-side/index.php');
-    exit();
+  session_unset();
+  session_destroy();
+  header('Location: /Naluri/client-side/index.php');
+  exit();
 }
 
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'patient') {
-    header('Location: /Naluri/client-side/index.php');
-    exit();
+  header('Location: /Naluri/client-side/index.php');
+  exit();
 }
 $user_id = $_SESSION['user_id'];
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Naluri - Recommendations</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet"> 
+  <link
+    href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="../../assets/css/patientstyles.css">
+  <!-- Include SweetAlert2 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
+
 <body class="bg-light">
 
   <!-- Sidebar -->
@@ -44,7 +50,7 @@ $user_id = $_SESSION['user_id'];
   <!-- Main Content -->
   <div class="main-content">
     <header class="main-header">
-      <h1>Good Morning, YEN!</h1>
+      <h1>Good Morning, World!</h1>
       <p class="subtext">Here are your personalized recommendations for today.</p>
     </header>
 
@@ -76,14 +82,28 @@ $user_id = $_SESSION['user_id'];
         </div>
       </div>
     </section>
-
-    <section class="progress-section">
-      <h2>Your Daily Progress</h2>
-      <div class="progress-circle"></div>
-      <p>60% of your goals completed today!</p>
+    <section class="charts mt-4">
+      <div class="charts-card mb-4">
+        <h2 class="chart-title">Task Completion</h2>
+        <div id="bar-chart"></div>
+      </div>
+      <div class="charts-card mb-4">
+        <h2 class="chart-title">Total Time Taken</h2>
+        <div id="area-chart"></div>
+      </div>
     </section>
+    <!-- Hidden input to store user ID -->
+    <input type="hidden" id="userId" value="<?php echo $user_id; ?>">
   </div>
 
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- ApexCharts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
+  <!-- Custom JS -->
+  <script src="../../scripts/userScript/recommendationScript.js"></script>
+  <!-- Include SweetAlert2 JS -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
+
 </html>

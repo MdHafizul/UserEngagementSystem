@@ -68,8 +68,8 @@ $user_id = $_SESSION['user_id'];
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-dark" href="./user.php">
-                        <i class="material-symbols-rounded opacity-5">account_circle</i>
-                        <span class="nav-link-text ms-1">User</span>
+                        <i class="material-symbols-rounded opacity-5">groups</i>
+                        <span class="nav-link-text ms-1">Patient</span>
                     </a>
                 </li>
                 <li class="nav-item">

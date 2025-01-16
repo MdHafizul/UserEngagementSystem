@@ -1,24 +1,40 @@
 <?php
 session_start();
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-  session_unset();
-  session_destroy();
-  header('Location: /Naluri/client-side/index.php');
-  exit();
+    session_unset();
+    session_destroy();
+    header('Location: /Naluri/client-side/index.php');
+    exit();
 }
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header('Location: /Naluri/client-side/index.php');
     exit();
 }
-
 ?>
 
+<!DOCTYPE html>
+<html lang="en">
 
-<!-- Material Icons -->
-<link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
-<!-- CSS Files -->
-<link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/naluri.png">
+    <link rel="icon" type="image/png" href="../assets/img/naluri.png">
+    <title>Admin Dashboard</title>
+
+    <!-- Fonts and icons -->
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+    <!-- Nucleo Icons -->
+    <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Material Icons -->
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <!-- CSS Files -->
+    <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -125,7 +141,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
                                             <div class="d-flex justify-content-between">
                                                 <div>
                                                     <p class="text-sm mb-0 text-capitalize">Video Watched</p>
-                                                    <h4 class="mb-0" id="task-completion">0</h4>
+                                                    <h4 class="mb-0" id="videos-watched">0</h4>
                                                 </div>
                                                 <div
                                                     class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -146,7 +162,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
                                             <div class="d-flex justify-content-between">
                                                 <div>
                                                     <p class="text-sm mb-0 text-capitalize">Books Read</p>
-                                                    <h4 class="mb-0" id="total-time-taken">0</h4>
+                                                    <h4 class="mb-0" id="books-read">0</h4>
                                                 </div>
                                                 <div
                                                     class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
@@ -203,63 +219,9 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     <!-- ApexCharts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/apexcharts/3.35.5/apexcharts.min.js"></script>
     <!-- Custom JS -->
-    <script>
-        // SIDEBAR TOGGLE
-        let sidebarOpen = false;
-        const sidebar = document.getElementById('sidebar');
-
-        function openSidebar() {
-            if (!sidebarOpen) {
-                sidebar.classList.add('sidebar-responsive');
-                sidebarOpen = true;
-            }
-        }
-
-        function closeSidebar() {
-            if (sidebarOpen) {
-                sidebar.classList.remove('sidebar-responsive');
-                sidebarOpen = false;
-            }
-        }
-
-        // Task data: Replace this with actual task completion data
-        const tasks = [1, 0, 1, 1, 0, 1, 0]; // Example: 1 = completed, 0 = not completed
-
-        // Calculate totals
-        const completedTasks = tasks.filter(task => task === 1).length;
-        const notCompletedTasks = tasks.filter(task => task === 0).length;
-
-        // PIE CHART setup for Task Completion
-        const pieChartOptions = {
-            series: [completedTasks, notCompletedTasks], // Task completed vs not completed
-            chart: {
-                type: 'pie',
-                height: 350,
-            },
-            labels: ['Completed', 'Not Completed'], // Labels for the chart
-        };
-
-        const pieChart = new ApexCharts(document.querySelector('#bar-chart'), pieChartOptions);
-        pieChart.render();
-
-        // AREA CHART setup for Total Time Taken
-        const areaChartOptions = {
-            series: [{
-                name: 'Total Time (hours)',
-                data: [10, 15, 20, 25, 30, 35, 40], // Total time taken in hours
-            }],
-            chart: {
-                type: 'area',
-                height: 350,
-            },
-            xaxis: {
-                categories: ['Task 1', 'Task 2', 'Task 3', 'Task 4', 'Task 5', 'Task 6', 'Task 7'],
-            },
-        };
-
-        const areaChart = new ApexCharts(document.querySelector('#area-chart'), areaChartOptions);
-        areaChart.render();
-    </script>
+    <script src="../scripts/dashboardScript.js"></script>
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 </body>
 
