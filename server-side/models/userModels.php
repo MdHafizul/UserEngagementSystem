@@ -114,54 +114,54 @@ class User
         $fields = [];
         $params = [];
         $types = '';
-
+    
         // Dynamically add fields to the update query based on provided data
         if (isset($data['name'])) {
             $fields[] = "name = ?";
             $params[] = $data['name'];
             $types .= 's';
         }
-
+    
         if (isset($data['email'])) {
             $fields[] = "email = ?";
             $params[] = $data['email'];
             $types .= 's';
         }
-
+    
         if (isset($data['username'])) {
             $fields[] = "username = ?";
             $params[] = $data['username'];
             $types .= 's';
         }
-
-        if (isset($data['password'])) {
+    
+        if (isset($data['password']) && !empty($data['password'])) {
             $fields[] = "password = ?";
             $params[] = password_hash($data['password'], PASSWORD_DEFAULT);
             $types .= 's';
         }
-
+    
         if (isset($data['user_type'])) {
             $fields[] = "user_type = ?";
             $params[] = $data['user_type'];
             $types .= 's';
         }
-
+    
         // If no fields are set to update, return false
         if (empty($fields)) {
             return false;
         }
-
+    
         // Add the WHERE clause for the specific user ID
         $sql = "UPDATE " . $this->table . " SET " . implode(", ", $fields) . " WHERE user_id = ?";
         $params[] = $this->user_id;
         $types .= 'i';
         $stmt = $this->conn->prepare($sql);
         $stmt->bind_param($types, ...$params);  // Bind the parameters dynamically
-
+    
         if ($stmt->execute()) {
             return true;
         }
-
+    
         return false;
     }
 

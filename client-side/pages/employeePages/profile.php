@@ -2,10 +2,10 @@
 session_start();
 
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-  session_unset();
-  session_destroy();
-  header('Location: /Naluri/client-side/index.php');
-  exit();
+    session_unset();
+    session_destroy();
+    header('Location: /Naluri/client-side/index.php');
+    exit();
 }
 
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
@@ -36,6 +36,8 @@ $user_id = $_SESSION['user_id'];
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <!-- CSS Files -->
     <link id="pagestyle" href="../../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -46,8 +48,7 @@ $user_id = $_SESSION['user_id'];
                 aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand px-4 py-3 m-0"
                 href="https://demos.creative-tim.com/material-dashboard/pages/dashboard" target="_blank">
-                <img src="../../assets/img/naluri.png" class="navbar-brand-img" width="26" height="26"
-                    alt="main_logo">
+                <img src="../../assets/img/naluri.png" class="navbar-brand-img" width="26" height="26" alt="main_logo">
                 <span class="ms-1 text-sm text-dark">Naluri</span>
             </a>
         </div>
@@ -82,7 +83,7 @@ $user_id = $_SESSION['user_id'];
             </ul>
         </div>
         <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-        <div class="mx-3">
+            <div class="mx-3">
                 <a class="btn bg-gradient-dark w-100" href="?action=logout" type="button">Logout</a>
             </div>
         </div>
@@ -169,9 +170,11 @@ $user_id = $_SESSION['user_id'];
     <!-- Include Bootstrap JS for modal functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-       const userId = "<?php echo $user_id; ?>"; // Get user ID from PHP
+        const userId = "<?php echo $user_id; ?>"; // Get user ID from PHP
     </script>
     <script src="../../scripts/employeeScript/profileScript.js"></script>
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

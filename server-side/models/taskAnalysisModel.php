@@ -89,9 +89,9 @@ class TaskAnalysis
     }
 
     // Delete task analysis by task_id
-    public function deleteByTaskId() 
+    public function deleteByTaskId()
     {
-        $query = 'DELETE FROM ' . $this->table . ' WHERE task_id = ?'; 
+        $query = 'DELETE FROM ' . $this->table . ' WHERE task_id = ?';
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('i', $this->task_id);
 
@@ -108,7 +108,7 @@ class TaskAnalysis
         $query = 'DELETE FROM ' . $this->table . ' WHERE analysis_id = ?';
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param('i', $this->analysis_id);
-    
+
         if ($stmt->execute()) {
             if ($stmt->affected_rows > 0) {
                 return true;
@@ -194,41 +194,79 @@ class TaskAnalysis
     }
 
     // Fetch the amount of time taken to complete tasks, grouped by task_id
-public function getTimeTakenToCompleteTasks()
-{
-    $sql = "SELECT 
+    public function getTimeTakenToCompleteTasks()
+    {
+        $sql = "SELECT 
                 task_id, 
                 SUM(time_taken_in_hours) as total_time_taken 
             FROM " . $this->table . " 
             GROUP BY task_id";
-    $stmt = $this->conn->query($sql);
+        $stmt = $this->conn->query($sql);
 
-    if ($stmt) {
-        return $stmt->fetch_all(MYSQLI_ASSOC); // Fetch all results as an associative array
+        if ($stmt) {
+            return $stmt->fetch_all(MYSQLI_ASSOC); // Fetch all results as an associative array
+        }
+        return false;
     }
-    return false;
-}
 
-// Fetch the amount of time taken to complete tasks by user ID, grouped by task_id
-public function getTimeTakenToCompleteTasksByUser($user_id)
-{
-    $sql = "SELECT 
+    // Fetch the amount of time taken to complete tasks by user ID, grouped by task_id
+    public function getTimeTakenToCompleteTasksByUser($user_id)
+    {
+        $sql = "SELECT 
                 task_id, 
                 SUM(time_taken_in_hours) as total_time_taken
             FROM " . $this->table . " 
             WHERE user_id = ? 
             GROUP BY task_id";
-    $stmt = $this->conn->prepare($sql);
-    $stmt->bind_param('i', $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('i', $user_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-    if ($result) {
-        return $result->fetch_all(MYSQLI_ASSOC); // Fetch all results as an associative array
+        if ($result) {
+            return $result->fetch_all(MYSQLI_ASSOC); // Fetch all results as an associative array
+        }
+        return false;
     }
-    return false;
-}
 
+    public function exists()
+    {
+        $sql = "SELECT analysis_id FROM " . $this->table . " WHERE user_id = ? AND task_id = ?";
+        $stmt = $this->conn->prepare($sql);
+        $stmt->bind_param('ii', $this->user_id, $this->task_id);
+        $stmt->execute();
+        $stmt->store_result();
+
+        if ($stmt->num_rows > 0) {
+            $stmt->bind_result($this->analysis_id);
+            $stmt->fetch();
+            return true;
+        }
+        return false;
+    }
+    // Update a task analysis
+    public function updateAnalysis()
+    {
+        $sql = "UPDATE " . $this->table . " 
+            SET is_task_done = ?, time_taken_in_hours = ?, article_watched = ?, video_watched = ?, books_read = ? 
+            WHERE analysis_id = ?";
+        $stmt = $this->conn->prepare($sql);
+
+        $stmt->bind_param(
+            'iisiii',
+            $this->is_task_done,
+            $this->time_taken_in_hours,
+            $this->article_watched,
+            $this->video_watched,
+            $this->books_read,
+            $this->analysis_id
+        );
+
+        if ($stmt->execute()) {
+            return true;
+        }
+        return false;
+    }
 
 }
 ?>

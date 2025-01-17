@@ -137,5 +137,45 @@ class TaskAnalysisController
         $timeData = $taskAnalysis->getTimeTakenToCompleteTasksByUser($user_id);
         echo json_encode($timeData, JSON_PRETTY_PRINT);
     }
+
+    // @desc Create or update a task analysis
+    // @route POST /routes/taskAnalysisRoutes.php/create
+
+    public function createOrUpdate($data)
+    {
+        global $conn;
+
+        $taskAnalysis = new TaskAnalysis($conn);
+        $taskAnalysis->task_id = $data['task_id'];
+        $taskAnalysis->user_id = $data['user_id'];
+        $taskAnalysis->is_task_done = $data['is_task_done'];
+        $taskAnalysis->time_taken_in_hours = $data['time_taken_in_hours'];
+        $taskAnalysis->article_watched = $data['article_watched'];
+        $taskAnalysis->video_watched = $data['video_watched'];
+        $taskAnalysis->books_read = $data['books_read'];
+
+        if ($taskAnalysis->exists()) {
+            if ($taskAnalysis->updateAnalysis()) {
+                echo json_encode(["success" => true, "message" => "Task analysis updated successfully"]);
+            } else {
+                echo json_encode(["success" => false, "message" => "Task analysis could not be updated"]);
+            }
+        } else {
+            if ($taskAnalysis->createAnalysis()) {
+                echo json_encode(["success" => true, "message" => "Task analysis created successfully"]);
+            } else {
+                echo json_encode(["success" => false, "message" => "Task analysis could not be created"]);
+            }
+        }
+    }
+
+    public function checkTaskAnalysisExists($task_id, $user_id)
+    {
+        global $conn;
+        $taskAnalysis = new TaskAnalysis($conn);
+        $taskAnalysis->task_id = $task_id;
+        $taskAnalysis->user_id = $user_id;
+        return $taskAnalysis->exists();
+    }
 }
 ?>

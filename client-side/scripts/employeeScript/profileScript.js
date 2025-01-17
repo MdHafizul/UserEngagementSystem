@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const apiEndpoint = `http://localhost/Naluri/server-side/routes/userRoutes.php/read_single?user_id=${userId}`;
     const profileCard = document.getElementById("profile-card");
 
+    let originalUserData = {};
+
     // Fetch user profile data
     function fetchUserProfile() {
         fetch(apiEndpoint)
@@ -40,13 +42,41 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 `;
 
-                // Pre-fill the edit form with user data
-                document.getElementById('editUserName').value = user.name;
-                document.getElementById('editUserEmail').value = user.email;
-                document.getElementById('editUserUsername').value = user.username;
+                // Add event listener for the edit button after it is added to the DOM
+                document.getElementById("editUserBtn").addEventListener("click", () => {
+                    showEditUserModal(user.user_id);
+                });
             })
             .catch((error) => {
                 console.error("Error fetching user profile:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Data',
+                    text: 'An error occurred while fetching user profile data. Please try again later.',
+                });
+            });
+    }
+
+    // Show the edit user modal
+    function showEditUserModal(userId) {
+        // Fetch user details based on ID and populate the form
+        fetch(`http://localhost/Naluri/server-side/routes/userRoutes.php/read_single?user_id=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("editUserName").value = data.name;
+                document.getElementById("editUserEmail").value = data.email;
+                document.getElementById("editUserUsername").value = data.username;
+                document.getElementById("editUserPassword").value = data.password;
+                const editUserModal = new bootstrap.Modal(document.getElementById("editUserModal"));
+                editUserModal.show();
+            })
+            .catch(error => {
+                console.error("Error fetching user details:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching User Details',
+                    text: 'An error occurred while fetching user details. Please try again later.',
+                });
             });
     }
 
@@ -54,41 +84,66 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("editUserForm").addEventListener("submit", (event) => {
         event.preventDefault();
 
-        const userData = {
-            name: document.getElementById("editUserName").value,
-            email: document.getElementById("editUserEmail").value,
-            username: document.getElementById("editUserUsername").value,
-        };
+        const updatedUserData = {};
+        const newName = document.getElementById("editUserName").value;
+        const newEmail = document.getElementById("editUserEmail").value;
+        const newUsername = document.getElementById("editUserUsername").value;
+        const newPassword = document.getElementById("editUserPassword").value;
 
-        const password = document.getElementById("editUserPassword").value;
-        if (password) {
-            userData.password = password;
+        if (newName !== originalUserData.name) {
+            updatedUserData.name = newName;
+        }
+        if (newEmail !== originalUserData.email) {
+            updatedUserData.email = newEmail;
+        }
+        if (newUsername !== originalUserData.username) {
+            updatedUserData.username = newUsername;
+        }
+        if (newPassword !== originalUserData.password) {
+            updatedUserData.password = newPassword;
         }
 
-        console.log("Updating user with ID:", userId);
-        console.log("User data:", userData);
+        if (Object.keys(updatedUserData).length === 0) {
+            Swal.fire({
+                icon: 'info',
+                title: 'No Changes',
+                text: 'No changes were made to the profile.',
+            });
+            return;
+        }
 
         fetch(`http://localhost/Naluri/server-side/routes/userRoutes.php/update?user_id=${userId}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(userData),
+            body: JSON.stringify(updatedUserData),
         })
             .then((response) => {
                 if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text) });
+                    return response.text().then((text) => {
+                        throw new Error(text);
+                    });
                 }
                 return response.json();
             })
             .then((data) => {
-                console.log("User updated:", data);
-                alert("Profile updated successfully!");
-                fetchUserProfile(); // Refresh the profile data
-                bootstrap.Modal.getInstance(document.getElementById("editUserModal")).hide();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated',
+                    text: 'Your profile details have been updated successfully.',
+                });
+                const editUserModal = new bootstrap.Modal(document.getElementById("editUserModal"));
+                editUserModal.hide();
+                fetchUserProfile();
             })
             .catch((error) => {
-                console.error("Error updating user:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Updating Profile',
+                    text: 'An error occurred while updating your profile. Please try again later.',
+                });
+                console.error("Error updating profile:", error);
             });
     });
 

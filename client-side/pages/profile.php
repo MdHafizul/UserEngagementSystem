@@ -35,6 +35,8 @@ $user_id = $_SESSION['user_id'];
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <!-- CSS Files -->
     <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -176,6 +178,8 @@ $user_id = $_SESSION['user_id'];
         const userId = "<?php echo $user_id; ?>"; // Pass the user ID to JavaScript
     </script>
     <script src="../scripts/profileScript.js"></script>
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

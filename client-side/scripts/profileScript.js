@@ -40,27 +40,42 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 `;
 
-                // Add event listener for the edit button
+                // Add event listener for the edit button after it is added to the DOM
                 document.getElementById("editUserBtn").addEventListener("click", () => {
-                    showEditUserModal(user);
+                    showEditUserModal(user.user_id);
                 });
             })
             .catch((error) => {
                 console.error("Error fetching user profile:", error);
-                profileCard.innerHTML = `
-                    <div class="col-12 text-center text-danger">
-                        Failed to load profile data.
-                    </div>
-                `;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Data',
+                    text: 'An error occurred while fetching user profile data. Please try again later.',
+                });
             });
     }
 
-    // Show the edit user modal with pre-filled data
-    function showEditUserModal(user) {
-        document.getElementById("editUserName").value = user.name;
-        document.getElementById("editUserEmail").value = user.email;
-        document.getElementById("editUserUsername").value = user.username;
-        document.getElementById("editUserPassword").value = "";
+    // Show the edit user modal
+    function showEditUserModal(userId) {
+        // Fetch user details based on ID and populate the form
+        fetch(`http://localhost/Naluri/server-side/routes/userRoutes.php/read_single?user_id=${userId}`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("editUserName").value = data.name;
+                document.getElementById("editUserEmail").value = data.email;
+                document.getElementById("editUserUsername").value = data.username;
+                document.getElementById("editUserPassword").value = data.password;
+                const editUserModal = new bootstrap.Modal(document.getElementById("editUserModal"));
+                editUserModal.show();
+            })
+            .catch(error => {
+                console.error("Error fetching user details:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching User Details',
+                    text: 'An error occurred while fetching user details. Please try again later.',
+                });
+            });
     }
 
     // Handle form submission for editing user
@@ -83,18 +98,29 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then((response) => {
                 if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text) });
+                    return response.text().then((text) => {
+                        throw new Error(text);
+                    });
                 }
                 return response.json();
             })
             .then((data) => {
-                console.log("User updated:", data);
-                alert("Profile updated successfully!");
-                fetchUserProfile(); // Refresh the profile data
-                bootstrap.Modal.getInstance(document.getElementById("editUserModal")).hide();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Profile Updated',
+                    text: 'Your profile details have been updated successfully.',
+                });
+                const editUserModal = new bootstrap.Modal(document.getElementById("editUserModal"));
+                editUserModal.hide();
+                fetchUserProfile();
             })
             .catch((error) => {
-                console.error("Error updating user:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Updating Profile',
+                    text: 'An error occurred while updating your profile. Please try again later.',
+                });
+                console.error("Error updating profile:", error);
             });
     });
 

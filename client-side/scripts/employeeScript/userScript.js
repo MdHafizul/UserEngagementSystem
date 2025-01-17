@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const apiEndpoint = "http://localhost/Naluri/server-side/routes/userRoutes.php/read_by_type?user_type=patient"; // Update with your API URL
+    const apiEndpoint = "http://localhost/Naluri/server-side/routes/userRoutes.php/read_by_type?user_type=patient"; 
     const userTableBody = document.querySelector("#userTable tbody");
     const assignTaskModal = new bootstrap.Modal(document.getElementById("assignTaskModal"));
     const assignTaskForm = document.getElementById("assignTaskForm");
@@ -36,21 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     userTableBody.appendChild(row);
                 });
 
-                // Add event listeners for edit, delete, and assign task buttons
-                document.querySelectorAll(".editBtn").forEach((button) => {
-                    button.addEventListener("click", (event) => {
-                        const userId = event.target.getAttribute("data-id");
-                        showEditUserModal(userId);
-                    });
-                });
-
-                document.querySelectorAll(".deleteBtn").forEach((button) => {
-                    button.addEventListener("click", (event) => {
-                        const userId = event.target.getAttribute("data-id");
-                        deleteUser(userId);
-                    });
-                });
-
+                // Add event listeners for assign task buttons
                 document.querySelectorAll(".assignTaskBtn").forEach((button) => {
                     button.addEventListener("click", (event) => {
                         const userId = event.target.getAttribute("data-id");
@@ -65,9 +51,13 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td colspan="5" class="text-center text-danger">Failed to load user data.</td>
                     </tr>
                 `;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Data',
+                    text: 'An error occurred while fetching user data. Please try again later.',
+                });
             });
     }
-
 
     // Show the assign task modal
     function showAssignTaskModal(userId) {
@@ -94,6 +84,11 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((error) => {
                 console.error("Error fetching patients:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Patients',
+                    text: 'An error occurred while fetching patients. Please try again later.',
+                });
             });
 
         // Fetch tasks for the select options
@@ -117,6 +112,11 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((error) => {
                 console.error("Error fetching tasks:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Tasks',
+                    text: 'An error occurred while fetching tasks. Please try again later.',
+                });
             });
 
         assignTaskModal.show();
@@ -146,13 +146,29 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then((data) => {
-                console.log("Task assigned:", data);
-                alert("Task assigned successfully!");
-                assignTaskModal.hide();
-                fetchUserData(); // Refresh the user list
+                if (data.message === "Task is already assigned to the user") {
+                    Swal.fire(
+                        'Warning!',
+                        'Task is already assigned to the user.',
+                        'warning'
+                    );
+                } else {
+                    assignTaskModal.hide();
+                    Swal.fire(
+                        'Success!',
+                        'Task assigned successfully.',
+                        'success'
+                    );
+                    fetchUserData(); // Refresh the user list
+                }
             })
             .catch((error) => {
                 console.error("Error assigning task:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Assigning Task',
+                    text: 'An error occurred while assigning the task. Please try again later.',
+                });
             });
     });
 

@@ -165,4 +165,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Initial fetch of user list
     fetchUserList();
+
+    // Fetch and display data for all users on initial page load
+    fetchData("all");
+
+    // Simulate a click on the Show Data button when the page loads
+    showDataBtn.click();
 });

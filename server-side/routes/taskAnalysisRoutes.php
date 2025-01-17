@@ -24,14 +24,13 @@ $data = json_decode(file_get_contents("php://input"), true);
 
 switch ($action) {
     case 'create':
-        if ($request_method == 'POST') {
-            $taskAnalysisController->create($data);
+        if ($request_method == 'POST' || $request_method == 'PUT') {
+            $taskAnalysisController->createOrUpdate($data);
         } else {
             http_response_code(405);
             echo json_encode(["message" => "Method Not Allowed"]);
         }
         break;
-
     case 'read':
         if ($request_method == 'GET') {
             $taskAnalysisController->read();
@@ -40,7 +39,22 @@ switch ($action) {
             echo json_encode(["message" => "Method Not Allowed"]);
         }
         break;
-
+    case 'check':
+        if ($request_method == 'GET') {
+            $task_id = $_GET['task_id'] ?? null;
+            $user_id = $_GET['user_id'] ?? null;
+            if ($task_id && $user_id) {
+                $exists = $taskAnalysisController->checkTaskAnalysisExists($task_id, $user_id);
+                echo json_encode(["exists" => $exists]);
+            } else {
+                http_response_code(400);
+                echo json_encode(["message" => "Task ID and User ID are required"]);
+            }
+        } else {
+            http_response_code(405);
+            echo json_encode(["message" => "Method Not Allowed"]);
+        }
+        break;
     case 'total-tasks-completed':
         if ($request_method == 'GET') {
             $taskAnalysisController->getTotalTasksCompleted();

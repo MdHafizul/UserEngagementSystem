@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const editTaskModal = new bootstrap.Modal(document.getElementById("editTaskModal"));
     const editTaskForm = document.getElementById("editTaskForm");
 
-    let currentTaskId = null; // To store the current task ID being edited
+    let currentTaskId = null; // To store the current task ID being edited or deleted
 
     // Fetch task data
     function fetchTaskData() {
@@ -42,17 +42,17 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 // Add event listeners for edit and delete buttons
-                document.querySelectorAll(".editBtn").forEach((button) => {
-                    button.addEventListener("click", (event) => {
-                        const taskId = event.target.getAttribute("data-id");
+                document.querySelectorAll('.editBtn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const taskId = event.target.getAttribute('data-id');
                         showEditTaskModal(taskId);
                     });
                 });
 
-                document.querySelectorAll(".deleteBtn").forEach((button) => {
-                    button.addEventListener("click", (event) => {
-                        const taskId = event.target.getAttribute("data-id");
-                        deleteTask(taskId);
+                document.querySelectorAll('.deleteBtn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const taskId = event.target.getAttribute('data-id');
+                        showDeleteTaskConfirmation(taskId);
                     });
                 });
             })
@@ -63,6 +63,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td colspan="5" class="text-center text-danger">Failed to load task data.</td>
                     </tr>
                 `;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Data',
+                    text: 'An error occurred while fetching task data. Please try again later.',
+                });
             });
     }
 
@@ -82,6 +87,20 @@ document.addEventListener("DOMContentLoaded", () => {
             status: document.getElementById("taskStatus").value,
         };
 
+        // Validate due date
+        const dueDate = new Date(taskData.due_date);
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Set to start of the day
+
+        if (dueDate < currentDate) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Due Date',
+                text: 'The due date cannot be in the past.',
+            });
+            return;
+        }
+
         fetch("http://localhost/Naluri/server-side/routes/taskRoutes.php/create", {
             method: "POST",
             headers: {
@@ -96,36 +115,44 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then((data) => {
-                console.log("Task added:", data);
                 addTaskModal.hide();
                 fetchTaskData(); // Refresh the task list
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Task Added',
+                    text: 'The task has been added successfully.',
+                });
             })
             .catch((error) => {
                 console.error("Error adding task:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Adding Task',
+                    text: 'An error occurred while adding the task. Please try again later.',
+                });
             });
     });
 
-    // Show the edit task modal and populate it with task data
+    // Show the edit task modal
     function showEditTaskModal(taskId) {
-
         currentTaskId = taskId;
+        // Fetch task details based on ID and populate the form
         fetch(`http://localhost/Naluri/server-side/routes/taskRoutes.php/read_single?task_id=${taskId}`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((task) => {
-                document.getElementById("editTaskTitle").value = task.title;
-                document.getElementById("editTaskDesc").value = task.description;
-                document.getElementById("editTaskDueDate").value = task.due_date;
-                document.getElementById("editTaskStatus").value = task.status;
-
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("editTaskTitle").value = data.title;
+                document.getElementById("editTaskDesc").value = data.description;
+                document.getElementById("editTaskDueDate").value = data.due_date;
+                document.getElementById("editTaskStatus").value = data.status;
                 editTaskModal.show();
             })
-            .catch((error) => {
-                console.error("Error fetching task data:", error);
+            .catch(error => {
+                console.error("Error fetching task details:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Task Details',
+                    text: 'An error occurred while fetching task details. Please try again later.',
+                });
             });
     }
 
@@ -139,6 +166,20 @@ document.addEventListener("DOMContentLoaded", () => {
             due_date: document.getElementById("editTaskDueDate").value,
             status: document.getElementById("editTaskStatus").value,
         };
+
+        // Validate due date
+        const dueDate = new Date(taskData.due_date);
+        const currentDate = new Date();
+        currentDate.setHours(0, 0, 0, 0); // Set to start of the day
+
+        if (dueDate < currentDate) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Due Date',
+                text: 'The due date cannot be in the past.',
+            });
+            return;
+        }
 
         fetch(`http://localhost/Naluri/server-side/routes/taskRoutes.php/update?task_id=${currentTaskId}`, {
             method: "PUT",
@@ -154,35 +195,72 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then((data) => {
-                console.log("Task updated:", data);
                 editTaskModal.hide();
                 fetchTaskData(); // Refresh the task list
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Task Updated',
+                    text: 'The task details have been updated successfully.',
+                });
             })
             .catch((error) => {
                 console.error("Error updating task:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Updating Task',
+                    text: 'An error occurred while updating the task. Please try again later.',
+                });
             });
     });
 
+    // Show delete task confirmation
+    function showDeleteTaskConfirmation(taskId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                deleteTask(taskId);
+            }
+        });
+    }
+
     // Handle task deletion
     function deleteTask(taskId) {
-        if (confirm("Are you sure you want to delete this task?")) {
-            fetch(`http://localhost/Naluri/server-side/routes/taskRoutes.php/delete?task_id=${taskId}`, {
-                method: "DELETE",
+        fetch(`http://localhost/Naluri/server-side/routes/taskRoutes.php/delete?task_id=${taskId}`, {
+            method: "DELETE",
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+                return response;
             })
-                .then((response) => {
-                    if (!response.ok) {
-                        return response.text().then(text => { throw new Error(text) });
-                    }
-                    return response.json();
-                })
-                .then((data) => {
-                    console.log("Task deleted:", data);
+            .then((response) => {
+                if (response.status === 200 || response.status === 204) {
                     fetchTaskData(); // Refresh the task list
-                })
-                .catch((error) => {
-                    console.error("Error deleting task:", error);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Task Deleted',
+                        text: 'The task has been deleted successfully.',
+                    });
+                } else {
+                    return response.text().then(text => { throw new Error(text) });
+                }
+            })
+            .catch((error) => {
+                console.error("Error deleting task:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Deleting Task',
+                    text: 'An error occurred while deleting the task. Please try again later.',
                 });
-        }
+            });
     }
 
     // Initial fetch of task data

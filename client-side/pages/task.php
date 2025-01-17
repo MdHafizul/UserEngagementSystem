@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-  session_unset();
-  session_destroy();
-  header('Location: /Naluri/client-side/index.php');
-  exit();
+    session_unset();
+    session_destroy();
+    header('Location: /Naluri/client-side/index.php');
+    exit();
 }
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     header('Location: /Naluri/client-side/index.php');
@@ -24,21 +24,28 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     <title>Task Pages</title>
 
     <!-- Fonts and icons -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+    <link rel="stylesheet" type="text/css"
+        href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
     <!-- Nucleo Icons -->
     <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
     <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
     <!-- Material Icons -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <!-- CSS Files -->
     <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2 bg-white my-2" id="sidenav-main">
+    <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2 bg-white my-2"
+        id="sidenav-main">
         <div class="sidenav-header">
-            <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-            <a class="navbar-brand px-4 py-3 m-0" href="https://demos.creative-tim.com/material-dashboard/pages/dashboard" target="_blank">
+            <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+                aria-hidden="true" id="iconSidenav"></i>
+            <a class="navbar-brand px-4 py-3 m-0"
+                href="https://demos.creative-tim.com/material-dashboard/pages/dashboard" target="_blank">
                 <img src="../assets/img/naluri.png" class="navbar-brand-img" width="26" height="26" alt="main_logo">
                 <span class="ms-1 text-sm text-dark">Naluri</span>
             </a>
@@ -80,17 +87,19 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
             </ul>
         </div>
         <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-        <div class="mx-3">
+            <div class="mx-3">
                 <a class="btn bg-gradient-dark w-100" href="?action=logout" type="button">Logout</a>
             </div>
         </div>
     </aside>
     <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+        <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
+            data-scroll="true">
             <div class="container-fluid py-1 px-3">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
-                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a></li>
+                        <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
+                        </li>
                         <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Task</li>
                     </ol>
                 </nav>
@@ -124,10 +133,18 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
                                 <table class="table align-items-center mb-0" id="taskTable">
                                     <thead>
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Title</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Due Date</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Title</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Description</th>
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Due Date</th>
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Status</th>
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
@@ -155,15 +172,18 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
                     <form id="addTaskForm">
                         <div class="mb-3">
                             <label for="taskTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control border border-primary rounded" id="taskTitle" required>
+                            <input type="text" class="form-control border border-primary rounded" id="taskTitle"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="taskDesc" class="form-label">Description</label>
-                            <input type="text" class="form-control border border-primary rounded" id="taskDesc" required>
+                            <input type="text" class="form-control border border-primary rounded" id="taskDesc"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="taskDueDate" class="form-label">Due Date</label>
-                            <input type="date" class="form-control border border-primary rounded" id="taskDueDate" required>
+                            <input type="date" class="form-control border border-primary rounded" id="taskDueDate"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="taskStatus" class="form-label">Status</label>
@@ -191,15 +211,18 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
                     <form id="editTaskForm">
                         <div class="mb-3">
                             <label for="editTaskTitle" class="form-label">Title</label>
-                            <input type="text" class="form-control border border-primary rounded" id="editTaskTitle" required>
+                            <input type="text" class="form-control border border-primary rounded" id="editTaskTitle"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="editTaskDesc" class="form-label">Description</label>
-                            <input type="text" class="form-control border border-primary rounded" id="editTaskDesc" required>
+                            <input type="text" class="form-control border border-primary rounded" id="editTaskDesc"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="editTaskDueDate" class="form-label">Due Date</label>
-                            <input type="date" class="form-control border border-primary rounded" id="editTaskDueDate" required>
+                            <input type="date" class="form-control border border-primary rounded" id="editTaskDueDate"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label for="editTaskStatus" class="form-label">Status</label>
@@ -218,6 +241,8 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'admin') {
     <script src="../scripts/taskScript.js"></script>
     <!-- Include Bootstrap JS for modal functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>

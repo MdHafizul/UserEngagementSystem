@@ -57,6 +57,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         Failed to load profile data.
                     </div>
                 `;
+                Swal.fire(
+                    'Error!',
+                    'Failed to load user profile data.',
+                    'error'
+                );
             });
     }
 
@@ -95,12 +100,21 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then((data) => {
                 console.log("User updated:", data); // Debugging line
-                alert("Profile updated successfully!");
+                Swal.fire(
+                    'Success!',
+                    'Profile updated successfully!',
+                    'success'
+                );
                 fetchUserProfile(); // Refresh the profile data
                 bootstrap.Modal.getInstance(document.getElementById("editUserModal")).hide();
             })
             .catch((error) => {
                 console.error("Error updating user:", error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to update profile.',
+                    'error'
+                );
             });
     });
 

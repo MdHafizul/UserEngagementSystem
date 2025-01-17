@@ -65,6 +65,11 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td colspan="4" class="text-center text-danger">Failed to load employee data.</td>
                     </tr>
                 `;
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Data',
+                    text: 'An error occurred while fetching employee data. Please try again later.',
+                });
             });
     }
 
@@ -101,9 +106,19 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((data) => {
                 addEmployeeModal.hide();
                 fetchEmployeeData(); // Refresh the employee list
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Employee Added',
+                    text: 'The employee has been added successfully.',
+                });
             })
             .catch((error) => {
                 console.error("Error adding employee:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Adding Employee',
+                    text: 'An error occurred while adding the employee. Please try again later.',
+                });
             });
     });
 
@@ -121,7 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("editEmployeeType").value = data.user_type;
                 editEmployeeModal.show();
             })
-            .catch(error => console.error("Error fetching employee details:", error));
+            .catch(error => {
+                console.error("Error fetching employee details:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Fetching Employee Details',
+                    text: 'An error occurred while fetching employee details. Please try again later.',
+                });
+            });
     }
 
     // Handle form submission for editing employee
@@ -152,9 +174,19 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((data) => {
                 editEmployeeModal.hide();
                 fetchEmployeeData(); // Refresh the employee list
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Employee Updated',
+                    text: 'The employee details have been updated successfully.',
+                });
             })
             .catch((error) => {
                 console.error("Error updating employee:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Updating Employee',
+                    text: 'An error occurred while updating the employee. Please try again later.',
+                });
             });
     });
 
@@ -164,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
         deleteEmployeeModal.show();
     }
 
-    // Handle employee deletion
+    // Handle  submission for deleting employee
     deleteEmployeeForm.addEventListener("submit", (event) => {
         event.preventDefault();
     
@@ -175,19 +207,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!response.ok) {
                     return response.text().then(text => { throw new Error(text) });
                 }
-                const contentType = response.headers.get("content-type");
-                if (contentType && contentType.indexOf("application/json") !== -1) {
-                    return response.json();
+                return response;
+            })
+            .then((response) => {
+                if (response.status === 200 || response.status === 204) {
+                    deleteEmployeeModal.hide();
+                    fetchEmployeeData(); // Refresh the employee list
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Employee Deleted',
+                        text: 'The employee has been deleted successfully.',
+                    });
                 } else {
                     return response.text().then(text => { throw new Error(text) });
                 }
             })
-            .then((data) => {
-                deleteEmployeeModal.hide();
-                fetchEmployeeData(); // Refresh the employee list
-            })
             .catch((error) => {
                 console.error("Error deleting employee:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Deleting Employee',
+                    text: 'An error occurred while deleting the employee. Please try again later.',
+                });
             });
     });
 

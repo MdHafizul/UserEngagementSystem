@@ -1,11 +1,11 @@
-<?php 
+<?php
 session_start();
 
 if (isset($_GET['action']) && $_GET['action'] == 'logout') {
-  session_unset();
-  session_destroy();
-  header('Location: /Naluri/client-side/index.php');
-  exit();
+    session_unset();
+    session_destroy();
+    header('Location: /Naluri/client-side/index.php');
+    exit();
 }
 
 if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
@@ -35,6 +35,8 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
     <!-- CSS Files -->
     <link id="pagestyle" href="../../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+    <!-- Include SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -45,8 +47,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                 aria-hidden="true" id="iconSidenav"></i>
             <a class="navbar-brand px-4 py-3 m-0"
                 href="https://demos.creative-tim.com/material-dashboard/pages/dashboard" target="_blank">
-                <img src="../../assets/img/naluri.png" class="navbar-brand-img" width="26" height="26"
-                    alt="main_logo">
+                <img src="../../assets/img/naluri.png" class="navbar-brand-img" width="26" height="26" alt="main_logo">
                 <span class="ms-1 text-sm text-dark">Naluri</span>
             </a>
         </div>
@@ -81,7 +82,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
             </ul>
         </div>
         <div class="sidenav-footer position-absolute w-100 bottom-0 ">
-        <div class="mx-3">
+            <div class="mx-3">
                 <a class="btn bg-gradient-dark w-100" href="?action=logout" type="button">Logout</a>
             </div>
         </div>
@@ -108,7 +109,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                 </div>
             </div>
         </nav>
-        
+
         <div class="container-fluid py-2">
             <div class="row">
                 <div class="col-12">
@@ -123,10 +124,18 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                 <table class="table align-items-center mb-0" id="userTable">
                                     <thead>
                                         <tr>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Name</th>
-                                            <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Email</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Username</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User_Type</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Name</th>
+                                            <th
+                                                class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                                Email</th>
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                Username</th>
+                                            <th
+                                                class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                                User_Type</th>
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>
@@ -176,6 +185,8 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
     <script src="../../scripts/employeeScript/userScript.js"></script>
     <!-- Include Bootstrap JS for modal functionality -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Include SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </body>
 
 </html>
