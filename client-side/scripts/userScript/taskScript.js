@@ -131,7 +131,8 @@ document.addEventListener("DOMContentLoaded", () => {
                         );
                         fetchTaskData(); // Refresh the task list
                         document.querySelector("#submitTaskModal .btn-close").click(); // Close modal
-                        updateUserTaskStatus(userTaskId, 'complete'); // Update user task status
+                        const status = isTaskDone ? 'complete' : 'pending';
+                        updateUserTaskStatus(userTaskId, status); // Update user task status
                     } else {
                         Swal.fire(
                             'Error!',

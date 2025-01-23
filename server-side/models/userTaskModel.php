@@ -170,5 +170,18 @@ class UserTask
 
         return false;
     }
+
+    public function deleteByUserId()
+    {
+        $query = 'DELETE FROM ' . $this->table . ' WHERE user_id = ?';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('i', $this->user_id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
 }
 ?>

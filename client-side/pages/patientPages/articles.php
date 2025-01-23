@@ -62,27 +62,27 @@ $user_id = $_SESSION['user_id'];
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Article 1</h5>
-                            <p class="card-text">Description of Article 1.</p>
-                            <a href="./article1.php" class="btn btn-primary">Read More</a>
+                            <h5 class="card-title">Understanding Mental Health</h5>
+                            <p class="card-text">Learn about the importance of mental health and how to maintain it.</p>
+                            <a href="https://www.mentalhealth.gov/basics/what-is-mental-health" class="btn btn-primary" target="_blank">Read More</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Article 2</h5>
-                            <p class="card-text">Description of Article 2.</p>
-                            <a href="./article2.php" class="btn btn-primary">Read More</a>
+                            <h5 class="card-title">Tips for Managing Stress</h5>
+                            <p class="card-text">Discover effective strategies for managing stress in your daily life.</p>
+                            <a href="https://www.helpguide.org/articles/stress/stress-management.htm" class="btn btn-primary" target="_blank">Read More</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="card">
                         <div class="card-body text-center">
-                            <h5 class="card-title">Article 3</h5>
-                            <p class="card-text">Description of Article 3.</p>
-                            <a href="./article3.php" class="btn btn-primary">Read More</a>
+                            <h5 class="card-title">The Benefits of Mindfulness</h5>
+                            <p class="card-text">Explore the benefits of mindfulness and how to practice it.</p>
+                            <a href="https://www.mindful.org/what-is-mindfulness/" class="btn btn-primary" target="_blank">Read More</a>
                         </div>
                     </div>
                 </div>

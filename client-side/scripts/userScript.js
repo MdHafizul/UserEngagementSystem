@@ -330,32 +330,63 @@ document.addEventListener("DOMContentLoaded", () => {
                 return response.json();
             })
             .then((data) => {
-                console.log("Task assigned:", data);
+                // Check if the task is already assigned to the user
                 if (data.message === "Task is already assigned to the user") {
                     Swal.fire(
                         'Warning!',
                         'Task is already assigned to the user.',
                         'warning'
                     );
-                } else {
-                    assignTaskModal.hide();
-                    Swal.fire(
-                        'Success!',
-                        'Task assigned successfully.',
-                        'success'
-                    );
-                    fetchUserData(); // Refresh the user list
+                    throw new Error("Duplicate task assignment"); // Prevent further logic execution
                 }
+
+                // If the task is not a duplicate, proceed with creating task analysis
+                const taskAnalysisData = {
+                    task_id: assignData.task_id,
+                    user_id: assignData.user_id,
+                    is_task_done: false,
+                    time_taken_in_hours: 0,
+                    article_watched: false,
+                    video_watched: false,
+                    books_read: false,
+                };
+
+                return fetch("http://localhost/Naluri/server-side/routes/taskAnalysisRoutes.php/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(taskAnalysisData),
+                });
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then((text) => {
+                        throw new Error(text);
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Task Assigned',
+                    text: 'The task has been assigned successfully.',
+                });
+                // Optionally, refresh the task list or perform other actions
             })
             .catch((error) => {
-                console.error("Error assigning task:", error);
-                Swal.fire(
-                    'Error!',
-                    'There was an error assigning the task.',
-                    'error'
-                );
+                if (error.message !== "Duplicate task assignment") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error Assigning Task',
+                        text: 'An error occurred while assigning the task. Please try again later.',
+                    });
+                    console.error("Error assigning task:", error);
+                }
             });
     });
+
 
     // Show assigned tasks for a user
     function showAssignedTasks(userId) {

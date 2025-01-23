@@ -101,10 +101,6 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                        <div class="input-group input-group-outline">
-                            <label class="form-label">Type here...</label>
-                            <input type="text" class="form-control">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -162,6 +158,7 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                 </div>
                 <div class="modal-body">
                     <form id="assignTaskForm">
+                    <input type="hidden" id="assignUserId" name="assignUserId">
                         <div class="mb-3">
                             <label for="assignUserSelect" class="form-label">Patient Name</label>
                             <select class="form-control" id="assignUserSelect" required>

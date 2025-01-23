@@ -93,10 +93,6 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
-                        <div class="input-group input-group-outline">
-                            <label class="form-label">Type here...</label>
-                            <input type="text" class="form-control">
-                        </div>
                     </div>
                 </div>
             </div>
@@ -119,7 +115,6 @@ if (!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'employee') {
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Title</th>
                                             <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Description</th>
                                             <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Due Date</th>
-                                            <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                                             <th class="text-secondary opacity-7"></th>
                                         </tr>
                                     </thead>

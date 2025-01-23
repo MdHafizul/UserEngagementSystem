@@ -2,6 +2,8 @@
 session_start();
 include_once '../models/userModels.php';
 include_once '../config/connectdb.php';
+include_once '../models/taskAnalysisModel.php'; // Include TaskAnalysis model
+include_once '../models/userTaskModel.php'; // Include UserTask model
 
 class UserController
 {
@@ -148,16 +150,20 @@ class UserController
     // @access Admins only
     public function delete($user_id)
     {
-        if ($_SESSION['user_type'] != 'admin') {
-            http_response_code(403);
-            echo json_encode(["message" => "Access forbidden. Admins only"]);
-            return;
-        }
-
-        global $conn;
+       global $conn;
 
         $user = new User($conn);
         $user->user_id = $user_id;
+
+        // Delete related task analysis
+        $taskAnalysis = new TaskAnalysis($conn);
+        $taskAnalysis->user_id = $user_id;
+        $taskAnalysis->deleteByUserId();
+
+        // Delete related user tasks
+        $userTask = new UserTask($conn);
+        $userTask->user_id = $user_id;
+        $userTask->deleteByUserId();
 
         if ($user->delete()) {
             echo json_encode(["message" => "User deleted successfully"]);

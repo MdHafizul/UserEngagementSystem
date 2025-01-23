@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const apiEndpoint = "http://localhost/Naluri/server-side/routes/userRoutes.php/read_by_type?user_type=patient"; 
+    const apiEndpoint = "http://localhost/Naluri/server-side/routes/userRoutes.php/read_by_type?user_type=patient";
     const userTableBody = document.querySelector("#userTable tbody");
     const assignTaskModal = new bootstrap.Modal(document.getElementById("assignTaskModal"));
     const assignTaskForm = document.getElementById("assignTaskForm");
@@ -40,7 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.querySelectorAll(".assignTaskBtn").forEach((button) => {
                     button.addEventListener("click", (event) => {
                         const userId = event.target.getAttribute("data-id");
-                        showAssignTaskModal(userId);
+                        const userName = event.target.closest("tr").querySelector("td").textContent;
+                        showAssignTaskModal(userId, userName);
                     });
                 });
             })
@@ -59,67 +60,36 @@ document.addEventListener("DOMContentLoaded", () => {
             });
     }
 
-    // Show the assign task modal
-    function showAssignTaskModal(userId) {
-        currentUserId = userId;
+    function showAssignTaskModal(userId, userName) {
+        document.getElementById("assignUserId").value = userId;
+        const assignUserSelect = document.getElementById("assignUserSelect");
+        assignUserSelect.innerHTML = `<option value="${userId}">${userName}</option>`;
+        assignUserSelect.disabled = true;
 
-        // Fetch patients for the select options
-        fetch("http://localhost/Naluri/server-side/routes/userRoutes.php/read_by_type?user_type=patient")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
-            .then((patients) => {
-                const assignUserSelect = document.getElementById("assignUserSelect");
-                assignUserSelect.innerHTML = ""; // Clear existing options
-
-                patients.forEach((patient) => {
-                    const option = document.createElement("option");
-                    option.value = patient.user_id;
-                    option.textContent = patient.name;
-                    assignUserSelect.appendChild(option);
-                });
-            })
-            .catch((error) => {
-                console.error("Error fetching patients:", error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error Fetching Patients',
-                    text: 'An error occurred while fetching patients. Please try again later.',
-                });
-            });
-
-        // Fetch tasks for the select options
+        // Fetch and populate task options
         fetch("http://localhost/Naluri/server-side/routes/taskRoutes.php/read")
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
-                }
-                return response.json();
-            })
+            .then((response) => response.json())
             .then((tasks) => {
                 const assignTaskSelect = document.getElementById("assignTaskSelect");
-                assignTaskSelect.innerHTML = ""; // Clear existing options
+                assignTaskSelect.innerHTML = '<option value="">Select a task</option>'; // Default option
 
                 tasks.forEach((task) => {
-                    const option = document.createElement("option");
-                    option.value = task.task_id;
-                    option.textContent = task.title;
-                    assignTaskSelect.appendChild(option);
+                    let taskOption = document.createElement("option");
+                    taskOption.value = task.task_id; // Use task_id from your data
+                    taskOption.textContent = task.title; // Use title from your data
+                    assignTaskSelect.appendChild(taskOption);
                 });
+
+                assignTaskModal.show();
             })
             .catch((error) => {
-                console.error("Error fetching tasks:", error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error Fetching Tasks',
-                    text: 'An error occurred while fetching tasks. Please try again later.',
-                });
+                console.error("Error loading tasks:", error);
+                Swal.fire(
+                    'Error!',
+                    'Failed to load tasks. Please try again.',
+                    'error'
+                );
             });
-
-        assignTaskModal.show();
     }
 
     // Handle form submission for assigning task
@@ -141,34 +111,67 @@ document.addEventListener("DOMContentLoaded", () => {
         })
             .then((response) => {
                 if (!response.ok) {
-                    return response.text().then(text => { throw new Error(text) });
+                    return response.text().then((text) => {
+                        throw new Error(text);
+                    });
                 }
                 return response.json();
             })
             .then((data) => {
+                // Check if the task is already assigned to the user
                 if (data.message === "Task is already assigned to the user") {
                     Swal.fire(
                         'Warning!',
                         'Task is already assigned to the user.',
                         'warning'
                     );
-                } else {
-                    assignTaskModal.hide();
-                    Swal.fire(
-                        'Success!',
-                        'Task assigned successfully.',
-                        'success'
-                    );
-                    fetchUserData(); // Refresh the user list
+                    throw new Error("Duplicate task assignment"); // Prevent further logic execution
                 }
+
+                // If the task is not a duplicate, proceed with creating task analysis
+                const taskAnalysisData = {
+                    task_id: assignData.task_id,
+                    user_id: assignData.user_id,
+                    is_task_done: false,
+                    time_taken_in_hours: 0,
+                    article_watched: false,
+                    video_watched: false,
+                    books_read: false,
+                };
+
+                return fetch("http://localhost/Naluri/server-side/routes/taskAnalysisRoutes.php/create", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(taskAnalysisData),
+                });
+            })
+            .then((response) => {
+                if (!response.ok) {
+                    return response.text().then((text) => {
+                        throw new Error(text);
+                    });
+                }
+                return response.json();
+            })
+            .then((data) => {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Task Assigned',
+                    text: 'The task has been assigned successfully.',
+                });
+                // Optionally, refresh the task list or perform other actions
             })
             .catch((error) => {
-                console.error("Error assigning task:", error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error Assigning Task',
-                    text: 'An error occurred while assigning the task. Please try again later.',
-                });
+                if (error.message !== "Duplicate task assignment") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error Assigning Task',
+                        text: 'An error occurred while assigning the task. Please try again later.',
+                    });
+                    console.error("Error assigning task:", error);
+                }
             });
     });
 

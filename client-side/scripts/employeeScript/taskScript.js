@@ -23,7 +23,6 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td>${task.title}</td>
                         <td>${task.description}</td>
                         <td class="text-center">${task.due_date}</td>
-                        <td class="text-center">${task.status}</td>
                     `;
 
                     taskTableBody.appendChild(row);

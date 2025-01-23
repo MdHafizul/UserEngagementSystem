@@ -122,6 +122,20 @@ class TaskAnalysis
         }
     }
 
+    // Delete task analysis by user_id
+    public function deleteByUserId()
+    {
+        $query = 'DELETE FROM ' . $this->table . ' WHERE user_id = ?';
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param('i', $this->user_id);
+
+        if ($stmt->execute()) {
+            return true;
+        }
+
+        return false;
+    }
+
     // Fetch the number of videos watched, books read, and articles watched
     public function getMediaCounts()
     {
